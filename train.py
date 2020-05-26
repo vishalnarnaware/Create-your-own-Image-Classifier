@@ -14,8 +14,6 @@ from PIL import Image
 import futility
 import fmodel
 
-arch = {"vgg16":25088,
-        "densenet121":1024}
 parser = argparse.ArgumentParser(
     description = 'Parser for train.py'
 )
@@ -41,7 +39,7 @@ dropout = args.dropout
 if torch.cuda.is_available() and power == 'gpu':
     device = torch.device("cuda:0")
 else:
-    evice = torch.device("cpu")
+    device = torch.device("cpu")
 
 def main():
     trainloader, validloader, testloader, train_data = futility.load_data(where)
