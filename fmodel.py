@@ -34,7 +34,7 @@ def setup_network(structure='vgg16',dropout=0.1,hidden_units=4096, lr=0.001, dev
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.classifier.parameters(), lr)
     
-    if torch.cuda.is_available() and args.gpu == 'gpu':
+    if torch.cuda.is_available() and device == 'gpu':
         device = torch.device("cuda:0")
     else:
         device = torch.device("cpu")
