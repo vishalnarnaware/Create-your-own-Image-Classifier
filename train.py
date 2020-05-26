@@ -38,10 +38,10 @@ power = args.gpu
 epochs = args.epochs
 dropout = args.dropout
 
-if power == 'gpu':
-    device = 'cuda'
+if torch.cuda.is_available() and power == 'gpu':
+    device = torch.device("cuda:0")
 else:
-    device = 'cpu'
+    evice = torch.device("cpu")
 
 def main():
     trainloader, validloader, testloader, train_data = futility.load_data(where)
@@ -58,7 +58,7 @@ def main():
             steps += 1
           
             if torch.cuda.is_available() and power =='gpu':
-                inputs, labels = inputs.to('cuda'), labels.to('cuda')
+                inputs, labels = inputs.to(device), labels.to(device)
 
             optimizer.zero_grad()
 
@@ -76,7 +76,7 @@ def main():
                 model.eval()
                 with torch.no_grad():
                     for inputs, labels in validloader:
-                        inputs, labels = inputs.to('cuda'), labels.to('cuda')
+                        inputs, labels = inputs.to(device), labels.to(device)
 
                         log_ps = model.forward(inputs)
                         batch_loss = criterion(log_ps, labels)
