@@ -12,9 +12,6 @@ import json
 from PIL import Image
 import futility
 
-arch = {"vgg16":25088,
-        "densenet121":1024}
-
 def setup_network(structure='vgg16',dropout=0.1,hidden_units=4096, lr=0.001, device='gpu'):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if structure == 'vgg16':
@@ -27,18 +24,21 @@ def setup_network(structure='vgg16',dropout=0.1,hidden_units=4096, lr=0.001, dev
 
     from collections import OrderedDict    
 
-    model.classifier = nn.Sequential(nn.Linear(arch['vgg16'] , hidden_units),
+    model.classifier = nn.Sequential(nn.Linear(model.classifier[0].in_features , hidden_units),
                                      nn.ReLU(),
                                      nn.Dropout(dropout),
                                      nn.Linear(hidden_units, 102),
                                      nn.LogSoftmax(dim=1))
     print(model)
-    model = model.to('cuda')
+    model = model.to(device)
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.classifier.parameters(), lr)
     
-    if torch.cuda.is_available() and device == 'gpu':
-        model.cuda()
+    if torch.cuda.is_available() and args.gpu == 'gpu':
+        device = torch.device("cuda:0")
+    else:
+        device = torch.device("cpu")
+    model.to(device)
 
     return model, criterion
 
