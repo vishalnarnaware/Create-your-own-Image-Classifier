@@ -57,6 +57,7 @@ def main():
           
             if torch.cuda.is_available() and power =='gpu':
                 inputs, labels = inputs.to(device), labels.to(device)
+                model = model.to(device)
 
             optimizer.zero_grad()
 
